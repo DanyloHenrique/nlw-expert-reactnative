@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { View, Text, FlatList, SectionList } from "react-native";
+import { Link } from 'expo-router'
 
 import { CATEGORIES, MENU } from "@/utils/data/products";
 
@@ -10,21 +11,22 @@ import { Product } from "@/components/product";
 export default function Home() {
   //estados do react native
   const [category, setCategory] = useState(CATEGORIES[0]);
-  const sectionListRef = useRef<SectionList>(null)
+  const sectionListRef = useRef<SectionList>(null);
 
   //função para trocar o estado de acordo com o que for selecionado
   function handleCategorySelect(selectedCategory: string) {
-    setCategory(selectedCategory)
+    setCategory(selectedCategory);
 
-    const sectionIndex = CATEGORIES.findIndex((category) => 
-    category === selectedCategory)
+    const sectionIndex = CATEGORIES.findIndex(
+      (category) => category === selectedCategory
+    );
 
     if (sectionListRef.current) {
       sectionListRef.current.scrollToLocation({
         animated: true,
         itemIndex: 0,
         sectionIndex,
-      })
+      });
     }
   }
 
@@ -56,16 +58,19 @@ export default function Home() {
         sections={MENU}
         keyExtractor={(item) => item.id}
         stickySectionHeadersEnabled={false}
-        renderItem={({ item }) => 
-        <Product data={item}/>
-      }
-        renderSectionHeader={({ section: {title} }) => (
-          <Text className="text-white text-xl font-heading mt-8 mb-3">{title}</Text>
+        renderItem={({ item }) =>  (
+          <Link href={`/product/${item.id}`} asChild> 
+            <Product data={item} />
+          </Link>
         )}
-
+        renderSectionHeader={({ section: { title } }) => (
+          <Text className="text-white text-xl font-heading mt-8 mb-3">
+            {title}
+          </Text>
+        )}
         className="flex-1 p-5"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 100,}}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </View>
   );
