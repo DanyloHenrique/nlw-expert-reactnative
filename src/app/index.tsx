@@ -2,16 +2,22 @@ import { useState, useRef } from "react";
 import { View, Text, FlatList, SectionList } from "react-native";
 import { Link } from 'expo-router'
 
-import { CATEGORIES, MENU } from "@/utils/data/products";
+import { CATEGORIES, MENU, ProductProps } from "@/utils/data/products";
 
 import { Header } from "@/components/header";
 import { CategoryButton } from "@/components/category-button";
 import { Product } from "@/components/product";
+import { useCartStore } from "@/stores/cart-store";
 
 export default function Home() {
   //estados do react native
+  const cartSore = useCartStore()
   const [category, setCategory] = useState(CATEGORIES[0]);
-  const sectionListRef = useRef<SectionList>(null);
+
+  const sectionListRef = useRef<SectionList<ProductProps>>(null);
+
+  const cartQuantityItems = cartSore.products.reduce((total, product) =>
+  total + product.quantity, 0)
 
   //função para trocar o estado de acordo com o que for selecionado
   function handleCategorySelect(selectedCategory: string) {
@@ -32,7 +38,7 @@ export default function Home() {
 
   return (
     <View className="flex-1 pt-8">
-      <Header title="Faça seu pedido" cartQuantityItems={3} />
+      <Header title="Faça seu pedido" cartQuantityItems={cartQuantityItems} />
 
       {/* tag para os menus na parte de cima */}
       {/* renderItem é o responsavel por renderizar o que vai ser adcionado na tela
